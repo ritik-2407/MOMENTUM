@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function SignInCard() {
   const router = useRouter();
@@ -12,18 +13,19 @@ export default function SignInCard() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    setError("");
 
-    const res = await fetch("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+    const res = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
     });
 
-    const data = await res.json();
-    if (res.ok) {
-      router.push("/dashboard/todos");
+    if (res?.error) {
+      setError(res.error);
     } else {
-      setError(data.error || "Invalid credentials");
+       router.push("/dashboard/todos");
+       router.refresh();
     }
   }
 

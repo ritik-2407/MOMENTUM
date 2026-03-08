@@ -51,15 +51,12 @@ async function fetchHabits(){
   if (!todo) return;
 
   const newStatus = !todo.status;
-  const userId = "691a1bdfe20a80340944fd1e";  // Replace with actual logged user ID
-
   await fetch("/api/habits", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id,
-      status: newStatus,
-      userId
+      status: newStatus
     })
   });
 

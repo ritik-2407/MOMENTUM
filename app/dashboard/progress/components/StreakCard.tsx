@@ -32,9 +32,16 @@ export default function StreakCard({ userId }: { userId: string }) {
 
   useEffect(() => {
     async function load() {
-      const res = await fetch(`/api/progress/${userId}`, { cache: "no-store" });
-      const json = await res.json();
-      setData(json);
+      try {
+        const res = await fetch(`/api/progress/${userId}`, { cache: "no-store" });
+        console.log(res);
+        if (!res.ok) throw new Error("Failed to fetch streak");
+        const json = await res.json();
+        setData(json || { streak: 0 });
+      } catch (err) {
+        console.error(err);
+        setData({ streak: 0 }); // Fallback for new users or errors
+      }
     }
     load();
   }, [userId]);
@@ -48,48 +55,47 @@ export default function StreakCard({ userId }: { userId: string }) {
   return (
     <div className="
       relative
-      w-sm
+      w-full
       rounded-2xl
-      p-6
-      flex flex-col items-center
-      bg-black/10
-      backdrop-blur-2xl
-      border border-white/10
-      shadow-[0px_0px_30px_rgba(0,0,0,0.4)]
+      p-6 pb-5
+      flex flex-col items-center justify-between
+      bg-[#0a0a0a]
+      border border-white/5
+      shadow-[0_4px_30px_rgba(0,0,0,0.5)]
       transition-all duration-300
       hover:scale-[1.02]
+      h-full
+      min-h-[320px]
     ">
       
-      {/* Subtle Top Gradient Glow */}
-      <div  />
+      {/* Container for top content (Icon + Label) */}
+      <div className="flex flex-col items-center mt-2 w-full">
+        {/* Fire Icon */}
+        <div className="p-[10px] rounded-full bg-[#141414] border border-white/10 shadow-[inset_0_2px_10px_rgba(255,255,255,0.02)] mb-4">
+          <Flame className="h-6 w-6 text-[#ff8b3d] drop-shadow-[0_0_8px_rgba(255,139,61,0.6)]" />
+        </div>
 
-      {/* Fire Icon */}
-      <div className="p-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 mb-3">
-        <Flame className="h-7 w-7 text-orange-400 drop-shadow-[0_0_5px_rgba(255,150,0,0.8)]" />
+        {/* Streak Label */}
+        <h2 className="text-md font-poppins tracking-[0.2em] text-[#a8a8a8] font-medium">
+          STREAK
+        </h2>
       </div>
 
-      {/* Streak Label */}
-      <h2 className="text-lg font-poppins tracking-wide text-white/80">Current Streak</h2>
+      {/* Streak Number - Flex-1 perfectly centers it vertically between the top and bottom text */}
+      <div className="flex flex-1 items-center justify-center w-full">
+        <p className="
+          font-poppins text-[5.5rem] leading-[1] font-bold text-white
+          drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]
+          animate-[fadeIn_0.5s_ease-out]
+        ">
+          {data.streak}
+        </p>
+      </div>
 
-      {/* Streak Number */}
-      <p className="
-        font-poppins text-7xl font-semibold text-white mt-8
-        drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]
-        animate-[fadeIn_0.7s_ease-out]
-      ">
-        {data.streak}
+      {/* Footer message */}
+      <p className="mt-auto font-poppins text-[15px] text-center text-[#6b6b6b] leading-relaxed max-w-[80%]">
+        {streakMessages[data.streak] || "Zero days down. Only one way up!"}
       </p>
-
-      <p className=" text-center text-xs font-roboto text-white/40 mt-13">
-  {
-    streakMessages[data.streak] 
-    }
-  
-</p>
-
-
-      {/* Subtle bottom line shine */}
-      <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-white/20 to-transparent" />
     </div>
   );
 }

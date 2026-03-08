@@ -35,54 +35,60 @@ export default function LeagueTimeline({ completedDays, className = "" }: League
   const currentIndex = LEAGUES.indexOf(currentLeague);
 
   return (
-    <div className={`w-full ${className}`}>
-        <h1 className="font-poppins text-center">L E A G U E</h1>
-      <div className="flex items-end gap-6 overflow-x-auto py-2">
+    <div className={`w-full flex flex-col pt-2 ${className}`}>
+      <h2 className="font-poppins text-sm font-semibold tracking-[0.6em] text-center text-white/70 mb-4 uppercase">
+        LEAGUE
+      </h2>
+      
+      <div className="flex items-end justify-between overflow-x-auto pb-4 px-2 no-scrollbar">
         {LEAGUES.map((league, idx) => {
           const status =
             idx < currentIndex ? "past" : idx === currentIndex ? "current" : "future";
 
           const iconSrc = `/leagueIcons/animals/${league}.png`;
 
-          const platformHeight = 5 + idx * 7; // smaller, subtle
-          const size = status === "current" ? 40 : 34; // smaller icons now
+          // Taller platforms for higher leagues, but visually distinct
+          const platformHeight = 12 + idx * 4; 
+          const size = status === "current" ? 44 : 36; 
 
           return (
             <div
               key={league}
-              className="flex flex-col items-center min-w-[60px]"
+              className="flex flex-col items-center min-w-[50px] sm:min-w-[60px]"
             >
               {/* Icon */}
               <img
                 src={iconSrc}
                 alt={league}
                 className={`
-                  object-contain transition-all duration-200
-                  ${status === "future" ? "opacity-30 grayscale" : "opacity-100"}
+                  object-contain transition-all duration-300
+                  ${status === "future" ? "opacity-30 grayscale" : "opacity-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]"}
+                  ${status === "current" ? "scale-110" : "scale-100"}
+                  mb-2
                 `}
                 style={{
                   width: size,
                   height: size,
-                  transform: status === "current" ? "scale(1.1)" : "scale(1)",
                 }}
               />
 
-              {/* Platform */}
+              {/* Platform Stick */}
               <div
-                className="w-1 mt-1 rounded-sm"
+                className="w-[2px] rounded-t-sm"
                 style={{
                   height: platformHeight,
                   backgroundColor:
                     status === "future"
-                      ? "rgba(255,255,255,0.05)"
+                      ? "rgba(255,255,255,0.1)"
                       : "rgba(255,255,255,0.8)",
+                  boxShadow: status === "current" ? "0 0 8px rgba(255,255,255,0.4)" : "none",
                 }}
               />
 
               {/* Label */}
               <div
-                className={`mt-1 text-[10px] tracking-wide ${
-                  status === "future" ? "text-neutral-600" : "text-neutral-200"
+                className={`mt-2 text-[9px] sm:text-[10px] tracking-widest uppercase font-medium ${
+                  status === "future" ? "text-[#555]" : "text-[#eaeaea]"
                 }`}
               >
                 {league}

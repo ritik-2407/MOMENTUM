@@ -12,16 +12,24 @@ export default function SignUpCard() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
 
-    const res = await fetch("/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const data = await res.json();
-    if (res.ok) setSuccess("done");
-    else setError(data.message || "Something went wrong");
+      const data = await res.json();
+      if (res.ok) {
+        setSuccess("done");
+      } else {
+        setError(data.error || "Something went wrong");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    }
   }
 
   return (

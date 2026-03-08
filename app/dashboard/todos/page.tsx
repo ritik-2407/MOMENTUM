@@ -42,15 +42,12 @@ export default function TodoPage() {
   if (!todo) return;
 
   const newStatus = !todo.status;
-  const userId = "691a1bdfe20a80340944fd1e";  // hardcoding the actual id due to client component 
-
   await fetch("/api/todos", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id,
-      status: newStatus,
-      userId 
+      status: newStatus
     })
   });
 

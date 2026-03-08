@@ -11,44 +11,45 @@ const BADGE_MILESTONES = [
 
 export default function BadgeCard({ completedDays, className = "" }: BadgeCardProps) {
   return (
-    <div className={`w-full pt-2  ${className}`}>
-      <h1 className="text-gray-600">------------------------------------------------------------------------------------------------------------------------</h1>
+    <div className={`w-full flex flex-col ${className}`}>
+      
+      {/* Dashed Line Separator sitting exactly where the league platforms end */}
+      <div className="w-[96%] mx-auto border-t-[1.5px] border-dashed border-white/10 mb-6"></div>
 
-      <div className="grid grid-cols-10 gap-4 mt-4">
+      <div className="flex justify-between items-center w-full px-2">
         {BADGE_MILESTONES.map((milestone) => {
-         const unlocked = completedDays >= milestone;
+          const unlocked = completedDays >= milestone;
 
           return (
             <div
               key={milestone}
-              className="flex flex-col items-center"
+              className="flex flex-col items-center w-[50px] sm:w-[60px]"
             >
               <img
                 src={`/badges/animals/${milestone}.png`}
                 alt={`${milestone} day badge`}
                 className={`
-                  object-contain transition-all duration-200
-                  ${unlocked ? "opacity-100" : "opacity-20 grayscale"}
+                  object-contain transition-all duration-300
+                  ${unlocked ? "opacity-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:scale-110" : "opacity-20 grayscale brightness-75"}
                 `}
                 style={{
-                  width: 40,
-                  height: 40,
-                  transform: unlocked ? "scale(1)" : "scale(0.9)",
+                  width: 36,
+                  height: 36,
                 }}
               />
               <p className={`
-                  object-contain transition-all duration-200
-                  ${unlocked ? " font-poppins opacity-100" : "font-poppins opacity-20 grayscale"}
-                `}>{milestone}</p>
-
-              
+                  mt-2 text-[11px] transition-all duration-200
+                  ${unlocked ? "font-poppins font-medium text-white/90" : "font-poppins text-white/20"}
+                `}>
+                {milestone}
+              </p>
             </div>
           );
         })}
       </div>
 
-      <h2 className="mt-5 font-poppins text-md text-center font-semibold text-neutral-300 mb-1 tracking-wide">
-        B A D G E S
+      <h2 className="mt-8 font-poppins text-sm text-center font-semibold text-white/70 uppercase tracking-[0.8em]">
+        BADGES
       </h2>
     </div>
   );

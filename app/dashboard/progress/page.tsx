@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import StreakDots from "./components/StreakDots";
 import StreakCard from "./components/StreakCard";
 import LevelCard from "./components/LevelCard";
@@ -8,71 +9,85 @@ import LeagueTimeline from "./components/LeagueTimeline";
 import DailyTodoGraph from "./components/DailyTodoGraph";
 import BadgeCard from "./components/BadgeCard";
 import Cookie from "./components/Cookie";
-import { Suspense } from "react";
 
 interface UserProgress {
   streak: number;
-  completedDays : {date: string}[];
+  completedDays: { date: string }[];
 }
 
 export default function ProgressPage() {
-  const userId = process.env.USER_ID; 
-
+  const { data: session, status } = useSession();
   const [progress, setProgress] = useState<UserProgress | null>(null);
 
   useEffect(() => {
     async function fetchProgress() {
-      const res = await fetch(`/api/progress/${userId}`, { cache: "no-store" });
-      const data = await res.json();
-      setProgress(data);
+      if (status === "authenticated" && session?.user) {
+        try {
+          // @ts-ignore
+          const res = await fetch(`/api/progress/${session.user.id}`, { cache: "no-store" });
+          if (!res.ok) throw new Error("Failed to fetch progress");
+          const data = await res.json();
+          setProgress(data || { streak: 0, completedDays: [] });
+        } catch (err) {
+          console.error(err);
+        }
+      }
     }
-
     fetchProgress();
-  }, []);
+  }, [session, status]);
 
   return (
-    <>
-      <div className="p-6 flex justify-start gap-10 pt-25">
-
-         <div>
-      <LevelCard />
-    </div>
-        <StreakCard userId={userId!} />
-
-        <div className="relative w-3xl rounded-2xl p-2 flex flex-col items-center bg-black/10 backdrop-blur-2xl border border-white/10 shadow-[0px_0px_30px_rgba(0,0,0,0.4)] transition-all duration-300 hover:scale-[1.02]">
-          <div className="w-2xl ">
-           
-     {progress && (
-    <LeagueTimeline completedDays={progress.completedDays.length} />
-  )}
-
-  {progress && (
-   <BadgeCard completedDays={progress.completedDays.length} />
-  )}
-
-            </div>
+    <div className="p-4 sm:p-6 lg:p-8 xl:p-10 max-w-[1800px] mx-auto">
+      
+      {/* ── THE COMMAND CENTER GRID ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8  mt-22">
+        
+        {/* ROW 1 */}
+        {/* Level */}
+        <div className="lg:col-span-1 h-full">
+          <LevelCard />
         </div>
+
+        {/* Streak */}
+        <div className="lg:col-span-1 h-full">
+          {status === "authenticated" && session?.user ? (
+            // @ts-ignore
+            <StreakCard userId={session.user.id} />
+          ) : (
+            <div className="w-full h-full min-h-[320px] animate-pulse bg-white/5 rounded-2xl border border-white/10" />
+          )}
+        </div>
+
+        {/* League Timeline + Badges */}
+        <div className="md:col-span-2 lg:col-span-2 relative rounded-2xl p-6 flex flex-col justify-center bg-[#0a0a0a] border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] h-full min-h-[320px]">
+          <LeagueTimeline completedDays={progress?.completedDays?.length || 0} />
+          <BadgeCard completedDays={progress?.completedDays?.length || 0} className="mt-4" />
+        </div>
+
+        {/* ROW 2 */}
+        {/* Monthly streak heatmap */}
+        <div className="md:col-span-2 lg:col-span-3 min-w-0 bg-[#0a0a0a] rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-4 sm:p-6 flex items-center justify-center">
+          <StreakDots completedDays={progress?.completedDays || []} />
+        </div>
+
+        {/* Daily todos bar chart */}
+        <div className="md:col-span-2 lg:col-span-1 w-full h-full min-h-[350px]">
+          {/* DailyTodoGraph supplies its own container with bg/border now */}
+          <DailyTodoGraph />
+        </div>
+
       </div>
 
-      <div className="flex gap-10 w-full justify-start pt-10 p-6">
-        {progress && (
-  <StreakDots completedDays={progress.completedDays} />
-)}
+      {/* ── Real Talk section ── */}
+      <div className="mt-16 mb-12 text-center px-4">
+        <h1 className="text-2xl sm:text-3xl font-poppins mb-6">Keep Going</h1>
+        
 
-     {progress && (
-    <DailyTodoGraph></DailyTodoGraph>
-  )}
-</div>
-
-<div className="mt-20 ">
-  <h1 className="text-center text-3xl font-poppins mb-10">Real Talk:</h1>
-  <p className="text-center text-sm text-white/50 w-md mx-140">See, there will be days when you'll feel like giving up on everything , but that's when you have to realize it's supposed to be HARD! <br></br> <br></br>The fact that you get up daily and despite all the demotivation , you still try? that deserves appreciation.</p>
-
-  <div className="flex justify-center gap-5 mt-15 mb-15">
-  <h1 className=" font-poppins text-center text-xl mt-1">Here's a cookie from our side :  </h1>
-  <Cookie></Cookie>
-  </div>
-</div>
-    </>
+        <div className="flex justify-center items-center gap-4 mt-10">
+          <h1 className="font-poppins text-lg sm:text-xl">Here&apos;s a cookie from our side:</h1>
+          <Cookie />
+        </div>
+      </div>
+    </div>
   );
 }
