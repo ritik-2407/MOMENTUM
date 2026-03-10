@@ -3,75 +3,148 @@ import { useMemo } from "react";
 
 type Todo = {
   status: boolean;
+  tier: "A" | "B" | "C";
 };
 
 interface ProgressCircleProps {
   todos: Todo[];
-  size?: number; // px
+  size?: number;
   strokeWidth?: number;
 }
 
-export default function ProgressCircle({
-  todos,
-  size = 140,
-  strokeWidth = 6,
-}: ProgressCircleProps) {
-  const total = todos.length;
-  const completed = todos.filter((t) => t.status === true).length;
-  const progress = total === 0 ? 0 : (completed / total) * 100;
+const TIER_META = {
+  A: { label: "T1",   opacity: 1.0  },
+  B: { label: "T2",  opacity: 0.45 },
+  C: { label: "T3",   opacity: 0.2  },
+} as const;
 
-  // circle math
+function MiniArc({
+  progress,
+  size = 64,
+  strokeWidth = 3,
+  opacity,
+}: {
+  progress: number;
+  size?: number;
+  strokeWidth?: number;
+  opacity: number;
+}) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (progress / 100) * circumference;
 
   return (
-    <div
-      className="relative flex flex-col items-center justify-center
-                 rounded-full backdrop-blur-md bg-[#00000000]
-                 border border-white/20 shadow-[0_0_25px_rgba(0,0,0.5)] 
-                 text-white select-none"
-      style={{ width: size, height: size }}
-    >
-      <svg
-        width={size}
-        height={size}
-        className="absolute transform -rotate-90"
-      >
-        {/* Background ring */}
-        <circle
-          r={radius}
-          cx={size / 2}
-          cy={size / 2}
-          stroke="rgba(255,255,255,0.15)"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-        />
+    <svg width={size} height={size} className="-rotate-90 transform">
+      <circle
+        r={radius} cx={size / 2} cy={size / 2}
+        stroke={`rgba(255,255,255,0.08)`}
+        strokeWidth={strokeWidth} fill="transparent"
+      />
+      <circle
+        r={radius} cx={size / 2} cy={size / 2}
+        stroke={`rgba(255,255,255,${opacity})`}
+        strokeWidth={strokeWidth} fill="transparent"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        className="transition-all duration-700 ease-out"
+      />
+    </svg>
+  );
+}
 
-        {/* Neon progress ring */}
-        <circle
-          r={radius}
-          cx={size / 2}
-          cy={size / 2}
-          stroke="rgba(255,255,255,0.9)"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          className="transition-all duration-700 ease-out drop-shadow-[0_0_0px_rgb(255,255,255)]"
-        />
-      </svg>
+export default function ProgressCircle({
+  todos,
+  size = 120,
+  strokeWidth = 5,
+}: ProgressCircleProps) {
+  const total = todos.length;
+  const completed = todos.filter((t) => t.status).length;
+  const progress = total === 0 ? 0 : (completed / total) * 100;
 
-      {/* Center labels */}
-      <div className="flex flex-col items-center justify-center text-center">
-        <span className="text-lg font-semibold">
-          {Math.round(progress)}%
-        </span>
-        <span className="text-[10px] opacity-75 mt-0.5">
-          {completed} / {total}
-        </span>
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (progress / 100) * circumference;
+
+  const tierStats = useMemo(() =>
+    (["A", "B", "C"] as const).map((tier) => {
+      const tierTodos = todos.filter((t) => t.tier === tier);
+      const tierDone  = tierTodos.filter((t) => t.status).length;
+      const pct       = tierTodos.length === 0 ? 0 : (tierDone / tierTodos.length) * 100;
+      return { tier, done: tierDone, total: tierTodos.length, pct };
+    }), [todos]
+  );
+
+  return (
+    <div className="w-full flex items-center gap-6">
+
+      {/* ── LEFT: Main arc ── */}
+      <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90 transform absolute inset-0">
+          <circle
+            r={radius} cx={size / 2} cy={size / 2}
+            stroke="rgba(255,255,255,0.07)"
+            strokeWidth={strokeWidth} fill="transparent"
+          />
+          <circle
+            r={radius} cx={size / 2} cy={size / 2}
+            stroke="rgba(255,255,255,0.85)"
+            strokeWidth={strokeWidth} fill="transparent"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            className="transition-all duration-700 ease-out"
+          />
+        </svg>
+
+        {/* Center text */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+          <span className="text-2xl font-light text-white tabular-nums leading-none">
+            {Math.round(progress)}%
+          </span>
+          
+        </div>
       </div>
+
+      {/* ── RIGHT: Tier arcs ── */}
+      <div className="flex flex-col gap-4 flex-1">
+        {tierStats.map(({ tier, done, total: t, pct }) => {
+          const meta = TIER_META[tier];
+          return (
+            <div key={tier} className="flex items-center gap-3">
+              {/* Label + bar */}
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-baseline mb-1.5">
+                  <span
+                    className="text-[9px] tracking-[0.25em] uppercase"
+                    style={{ color: `rgba(255,255,255,${meta.opacity})` }}
+                  >
+                    {meta.label}
+                  </span>
+                  <span
+                    className="text-[9px] tabular-nums"
+                    style={{ color: `rgba(255,255,255,${meta.opacity * 0.6})` }}
+                  >
+                    {done}/{t}
+                  </span>
+                </div>
+
+                {/* Thin progress bar */}
+                <div className="h-px w-full bg-white/[0.06] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-700 ease-out"
+                    style={{
+                      width: `${pct}%`,
+                      background: `rgba(255,255,255,${meta.opacity})`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 }

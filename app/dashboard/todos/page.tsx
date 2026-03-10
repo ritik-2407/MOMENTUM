@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 import Clock from "@/app/components/Clock";
-import ProgressCircle from "./components/ProgressCircle"; 
+import ProgressCircle from "./components/ProgressCircle";
 import QuotationCard from "./components/QuotationCard";
 
 export interface Todo {
@@ -38,25 +38,24 @@ export default function TodoPage() {
   }
 
   async function toggleTodo(id: string) {
-  const todo = todos.find(t => t._id === id);
-  if (!todo) return;
+    const todo = todos.find((t) => t._id === id);
+    if (!todo) return;
 
-  const newStatus = !todo.status;
-  await fetch("/api/todos", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id,
-      status: newStatus
-    })
-  });
+    const newStatus = !todo.status;
+    await fetch("/api/todos", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        status: newStatus,
+      }),
+    });
 
-  // Update UI after successful backend update
-  setTodos(prev =>
-    prev.map(t => (t._id === id ? { ...t, status: newStatus } : t))
-  );
-}
-
+    // Update UI after successful backend update
+    setTodos((prev) =>
+      prev.map((t) => (t._id === id ? { ...t, status: newStatus } : t)),
+    );
+  }
 
   async function deleteTodo(id: string) {
     await fetch("/api/todos", {
@@ -65,35 +64,49 @@ export default function TodoPage() {
       body: JSON.stringify({ id }),
     });
 
-    setTodos(prev => prev.filter(t => t._id !== id));
+    setTodos((prev) => prev.filter((t) => t._id !== id));
   }
 
   return (
-    <>
-    <div className="text-4xl pt-7 pl-10 font-poppins text-amber-50">
-      <Clock></Clock>
+    <div className="p-4 sm:p-6 lg:p-8 xl:p-10 max-w-[1800px] mx-auto min-h-screen">
+      {/* ── HEADER AREA ── */}
+      {/*<div className="text-4xl pt-2 pl-4 md:pl-8 mb-10 font-poppins text-amber-50">
+        <Clock />
+      </div>*/}
+
+      {/* ── THE FOCUS CENTER GRID ── */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 mt-22">
+        {/* LEFT COLUMN: Main Todos Area */}
+        <div className="md:col-span-8 lg:col-span-8 flex flex-col gap-6">
+          <div className="bg-[#0a0a0a] rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 sm:p-8 md:p-10 flex-col flex h-full">
+            <h1 className="text-3xl sm:text-4xl font-semibold mb-10 text-white font-poppins tracking-wide">
+              So, I wanna do...
+            </h1>
+
+            <TodoForm onAdd={addTodo} />
+            <TodoList
+              todos={todos}
+              onToggle={toggleTodo}
+              onDelete={deleteTodo}
+            />
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Sidebar Stats & Quotes */}
+        <div className="md:col-span-4 lg:col-span-4 flex flex-col gap-6">
+          <div className="bg-[#0a0a0a] rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 flex flex-col min-h-[200px]">
+            <p className="text-[9px] tracking-[0.3em] text-white/20 uppercase mb-6">
+              
+            </p>
+            <ProgressCircle todos={todos} size={110} />
+          </div>
+
+          {/* Quotation Card Wrapper */}
+          <div className="h-260px min-h-[250px] relative">
+            <QuotationCard />
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div className="flex justify-between  mt-25  ">
-    
-   <div className="ml-25 mr-35 mt-35">
-  <ProgressCircle todos={todos} size={200} />
-</div>
-
-
-    <div className="flex items-center justify-between flex-col ml-20 mr-18">
-      <h1 className="text-4xl font-semibold mb-14">So, I wanna do...</h1>
-
-      <TodoForm onAdd={addTodo} />
-      <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
-    </div>
-
-    <div  className="pr-10  pt-45">
-
-    <QuotationCard></QuotationCard>
-    </div>
-
-    </div>
-    </>
   );
 }

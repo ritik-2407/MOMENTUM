@@ -9,7 +9,7 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        username: { label: "Username", type: "text", placeholder: "" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
@@ -21,12 +21,12 @@ export const authOptions: AuthOptions = {
 
         const user: any = await User.findOne({ username: credentials.username });
         if (!user) {
-          throw new Error("Invalid username or password");
+          throw new Error("Invalid username");
         }
 
         const isPasswordCorrect = await bcryptjs.compare(credentials.password, user.password);
         if (!isPasswordCorrect) {
-          throw new Error("Invalid username or password");
+          throw new Error("Invalid password");
         }
 
         return { id: user._id.toString(), username: user.username };

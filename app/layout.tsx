@@ -4,6 +4,8 @@ import { Poppins, Roboto} from "next/font/google";
 import "./globals.css";
 
 
+
+
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "600", "700"],
@@ -38,6 +40,7 @@ export const metadata: Metadata = {
 };
 
 import AuthProvider from "./components/AuthProvider";
+import StarBackground from "./components/StarBackground";
 
 export default function RootLayout({
   children,
@@ -61,15 +64,7 @@ export default function RootLayout({
         `}
       >
         <AuthProvider>
-          {/* PREMIUM DARK BACKGROUND LAYER */}
-          <div
-            className="
-              fixed inset-0 -z-10 
-              bg-[#000000]
-              bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))]
-            "
-          />
-
+          <StarBackground />
           {/* ALL YOUR CONTENT */}
           {children}
         </AuthProvider>

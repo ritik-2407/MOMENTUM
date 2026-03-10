@@ -1,7 +1,6 @@
-// components/DailyTodoBar.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import useSWR from "swr";
 import {
   ResponsiveContainer,
@@ -10,64 +9,149 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
+  LabelList,
+  Cell,
 } from "recharts";
 
-type Point = { date: string; value: number };
+type Point = { day: string; date: string; value: number; isToday: boolean };
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-export default function DailyTodoBar({ api = "/api/todo-stats", height = 220 }: { api?: string; height?: number }) {
-  const { data } = useSWR(api, fetcher, { refreshInterval: 0 });
-  const [points, setPoints] = useState<Point[]>([]);
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  useEffect(() => {
-    if (!data) return;
-    const history = data.history || {};
-    const arr: Point[] = Object.keys(history).map((d) => ({
-      // keep full date internally, but we will hide x labels anyway
-      date: d,
-      value: Number(history[d]) || 0,
-    }));
-    arr.sort((a, b) => a.date.localeCompare(b.date));
-    setPoints(arr);
-  }, [data]);
+function buildPoints(history: Record<string, number>): Point[] {
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-  // while loading show a minimal placeholder
-  if (!data) return <div className="p-4">Loading...</div>;
+  return Object.keys(history)
+    .sort()
+    .slice(-7)                              // ✅ last 7 days only
+    .map((dateStr) => {
+      const [year, month, day] = dateStr.split("-").map(Number);
+      const d = new Date(year, month - 1, day); // ✅ timezone-safe
+      return {
+        date: dateStr,
+        day: DAY_LABELS[d.getDay()],
+        value: history[dateStr] ?? 0,
+        isToday: dateStr === todayKey,
+      };
+    });
+}
+// Custom tooltip
+function CustomTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div
+      style={{
+        background: "#1a1a1a",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: 8,
+        padding: "6px 12px",
+        fontSize: 12,
+        color: "#fff",
+      }}
+    >
+      <p style={{ margin: 0, color: "#888", marginBottom: 2 }}>{payload[0]?.payload?.date}</p>
+      <p style={{ margin: 0 }}>
+        <span style={{ color: "#fff", fontWeight: 600 }}>{payload[0]?.value}</span>
+        <span style={{ color: "#666", marginLeft: 4 }}>completed</span>
+      </p>
+    </div>
+  );
+}
 
-  // compute max so Y axis can be clean (dataMax + 1)
+export default function DailyTodoGraph({
+  api = "/api/todo-stats",
+}: {
+  api?: string;
+}) {
+  const { data, error } = useSWR(api, fetcher, { refreshInterval: 30_000 });
+
+  const isLoading = !data && !error;
+
+  if (isLoading) {
+    return (
+      <div className="relative w-full h-full flex flex-col bg-[#0a0a0a] rounded-2xl border border-white/5 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.5)] min-h-[350px]">
+        <p className="font-poppins text-sm tracking-wide text-[#a8a8a8] mb-4">Daily Todos</p>
+        <div className="flex-1 flex items-end gap-2 pb-6 px-2">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex-1 rounded-sm animate-pulse bg-white/5"
+              style={{ height: `${20 + Math.random() * 40}%` }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error || data?.error) {
+    return (
+      <div className="relative w-full h-full flex flex-col items-center justify-center bg-[#0a0a0a] rounded-2xl border border-white/5 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.5)] min-h-[350px]">
+        <p className="text-sm text-red-400">Failed to load stats</p>
+      </div>
+    );
+  }
+
+  const points = buildPoints(data?.history ?? {});
   const dataMax = points.reduce((m, p) => (p.value > m ? p.value : m), 0);
+  const yDomain: [number, number] = [0, Math.max(dataMax + 2, 5)];
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-end bg-[#0a0a0a] rounded-2xl border border-white/5 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-      
-      {/* Title positioned at top right */}
-      <div className="absolute top-6 right-6">
-        <p className="font-poppins text-sm tracking-wide text-[#a8a8a8]">Completed Todos</p>
+    <div className="relative w-full h-full flex flex-col bg-black/40 rounded-2xl border border-white/5 p-6 shadow-[0_4px_30px_rgba(0,0,0,0.5)] min-h-[350px]">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="font-poppins text-sm tracking-wide text-[#a8a8a8]">Daily Todos</p>
+        <span className="text-xs text-[#555]">last 7 days</span>
       </div>
 
-      <div style={{ width: "100%", height: "70%" }}>
-        <ResponsiveContainer>
-          <BarChart data={points} >
-            <CartesianGrid horizontal={false} vertical={false} />
-            <XAxis dataKey="date" tick={false} axisLine={false}  />
+      {/* Big count for today */}
+      <div className="mb-4">
+        <span className="text-3xl font-bold text-white">
+          {points.find((p) => p.isToday)?.value ?? 0}
+        </span>
+        <span className="text-sm text-[#555] ml-2">today</span>
+      </div>
+
+      {/* Chart */}
+      <div className="flex-1" style={{ minHeight: 180 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={points}
+            margin={{ top: 20, right: 4, left: -20, bottom: 0 }}
+            barCategoryGap="30%"
+          >
             <YAxis
-              width={20}
+              domain={yDomain}
               allowDecimals={false}
-              domain={[0, dataMax + 1]}
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#555", fontSize: 10, fontFamily: "sans-serif" }}
+              tick={{ fill: "#444", fontSize: 10, fontFamily: "sans-serif" }}
             />
-            <Tooltip
-              wrapperStyle={{ outline: "none", background:"none" }}
-              contentStyle={{ background: "#111", border: "1px solid rgba(255,255,255,0.1)", padding: "6px 10px", borderRadius: 8, fontSize: 12, color: "#fff" }}
-              labelFormatter={(label) => `Date: ${label}`}
-              formatter={(value: any) => [value, "Completed"]}
-              cursor={{ fill: "rgba(255,255,255,0.05)" }}
+            <XAxis
+              dataKey="day"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#555", fontSize: 11, fontFamily: "sans-serif" }}
+              interval={0}
             />
-            <Bar dataKey="value" fill="#ffffff" radius={[4, 4, 0, 0]} barSize={2} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+              {points.map((entry, index) => (
+                <Cell
+                  key={index}
+                  fill={entry.isToday ? "#ffffff" : entry.value > 0 ? "#555" : "#1f1f1f"}
+                />
+              ))}
+              <LabelList
+                dataKey="value"
+                position="top"
+                style={{ fill: "#666", fontSize: 10, fontFamily: "sans-serif" }}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                formatter={(v: any) => (typeof v === "number" && v > 0 ? v : "")}
+              />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
