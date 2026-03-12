@@ -17,6 +17,10 @@ export async function POST(req: Request) {
     if (!todo) {
       return NextResponse.json({ error: "Todo cannot be empty" }, { status: 400 });
     }
+    {/* if(await Todo.find({todo,  userId: (session.user as any).id})){
+      return NextResponse.json({ error: "Todo already exists" }, { status: 400 });
+    }
+      */}
 
     const newTodo = await Todo.create({ 
       todo, 

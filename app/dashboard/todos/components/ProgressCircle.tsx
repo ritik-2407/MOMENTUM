@@ -13,45 +13,12 @@ interface ProgressCircleProps {
 }
 
 const TIER_META = {
-  A: { label: "T1",   opacity: 1.0  },
-  B: { label: "T2",  opacity: 0.45 },
-  C: { label: "T3",   opacity: 0.2  },
+  A: { label: "T1",   opacity: 1.0 , color: `rgba(248, 93, 93, 1)`  },
+  B: { label: "T2",  opacity: 0.45 , color: "rgba(248, 224, 105, 1)" },
+  C: { label: "T3",   opacity: 0.2 , color: "rgba(150, 245, 150, 0.8)"  },
 } as const;
 
-function MiniArc({
-  progress,
-  size = 64,
-  strokeWidth = 3,
-  opacity,
-}: {
-  progress: number;
-  size?: number;
-  strokeWidth?: number;
-  opacity: number;
-}) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (progress / 100) * circumference;
 
-  return (
-    <svg width={size} height={size} className="-rotate-90 transform">
-      <circle
-        r={radius} cx={size / 2} cy={size / 2}
-        stroke={`rgba(255,255,255,0.08)`}
-        strokeWidth={strokeWidth} fill="transparent"
-      />
-      <circle
-        r={radius} cx={size / 2} cy={size / 2}
-        stroke={`rgba(255,255,255,${opacity})`}
-        strokeWidth={strokeWidth} fill="transparent"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        className="transition-all duration-700 ease-out"
-      />
-    </svg>
-  );
-}
 
 export default function ProgressCircle({
   todos,
@@ -117,13 +84,13 @@ export default function ProgressCircle({
                 <div className="flex justify-between items-baseline mb-1.5">
                   <span
                     className="text-[9px] tracking-[0.25em] uppercase"
-                    style={{ color: `rgba(255,255,255,${meta.opacity})` }}
+                    style={{ color: `rgba(255,255,255, 0.7)` }}
                   >
                     {meta.label}
                   </span>
                   <span
                     className="text-[9px] tabular-nums"
-                    style={{ color: `rgba(255,255,255,${meta.opacity * 0.6})` }}
+                    style={{ color: `rgba(255,255,255, 0.7)` }}
                   >
                     {done}/{t}
                   </span>
@@ -135,7 +102,7 @@ export default function ProgressCircle({
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
                       width: `${pct}%`,
-                      background: `rgba(255,255,255,${meta.opacity})`,
+                      background: `${meta.color}`,
                     }}
                   />
                 </div>

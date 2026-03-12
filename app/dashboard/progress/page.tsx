@@ -84,7 +84,7 @@ export default function ProgressPage() {
         
 
         <div className="flex justify-center items-center gap-4 mt-10">
-          <h1 className="font-poppins text-lg sm:text-xl">Here&apos;s a cookie from our side:</h1>
+          <h1 className="font-poppins text-lg sm:text-xl">Here&apos;s a cookie from my side:</h1>
           <Cookie />
         </div>
       </div>

@@ -14,9 +14,8 @@ export default function QuotationCard() {
   useEffect(() => {
     async function fetchQuote() {
       try {
-        // Fetch a random quote.
-        // dummyjson.com/quotes is fast, reliable, and requires no auth.
-        const res = await fetch("https://dummyjson.com/quotes/random");
+        // Fetch a random quote from our internal proxy to avoid CORS and format issues
+        const res = await fetch("/api/quote");
         if (!res.ok) throw new Error("Failed to fetch quote");
         const json = await res.json();
         setData({ quote: json.quote, author: json.author });
@@ -48,12 +47,9 @@ export default function QuotationCard() {
   }
 
   return (
-    <div className="bg-[#0a0a0a] rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 sm:p-8 flex flex-col items-center md:items-start justify-center min-h-[20px] absolute inset-0 w-full h-full transition-all duration-500">
+    <div className="bg-black/40 rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 sm:p-8 flex flex-col items-center md:items-start justify-center min-h-[20px] absolute inset-0 w-full h-full transition-all duration-500">
       
-      {/* Icon */}
-      <div className="mb-4">
-        <img src="/icons/book.png" alt="book icon" className="w-8 h-8 opacity-80" />
-      </div>
+     
 
       {/* Quote */}
       <p className="italic text-center md:text-left text-[15px] sm:text-base text-white/80 leading-relaxed font-poppins relative">

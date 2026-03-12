@@ -8,7 +8,7 @@ export default function CookieToggle() {
   return (
     <button
       onClick={() => setEaten(prev => !prev)}
-      className="transition-transform duration-200 hover:scale-110 active:scale-95"
+      className="transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer"
     >
       <img
         src={eaten ? "/icons/eaten-cookie.png" : "/icons/cookie.png"}

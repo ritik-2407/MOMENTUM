@@ -48,7 +48,7 @@ export default function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
       {/* Delete button: Invisible until hovered to keep UI clean */}
       <button
         onClick={() => onDelete(todo._id)}
-        className="cursor-pointer text-[11px] uppercase tracking-wider text-transparent group-hover:text-white/30 hover:!text-white/80 transition-colors"
+        className="cursor-pointer text-[11px] uppercase tracking-wider text-transparent group-hover:text-red-400 hover:!text-white/80 transition-colors"
       >
         Remove
       </button>
