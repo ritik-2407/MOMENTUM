@@ -96,9 +96,8 @@ export default function LevelCard() {
       rounded-2xl
       p-6 pb-4
       flex flex-col items-center justify-between
-      bg-black/40
+      bg-black/20
       border border-white/5
-      shadow-[0_4px_30px_rgba(0,0,0,0.5)]
       transition-all duration-300
       hover:scale-[1.02]
       h-full

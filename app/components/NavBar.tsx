@@ -51,7 +51,7 @@ export default function Navbar() {
   const navItems = [
     { label: "Progress", href: "/dashboard/progress" },
     { label: "Todo", href: "/dashboard/todos" },
-    { label: "Forge", href: "/dashboard/forge" },
+    { label: "Space", href: "/dashboard/study-space" },
   ];
 
   return (

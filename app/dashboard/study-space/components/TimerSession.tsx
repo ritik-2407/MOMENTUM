@@ -82,7 +82,7 @@ export function TimerSession() {
   const progress = duration > 0 ? ((duration - timeLeft) / duration) * 100 : 0;
 
   return (
-    <div className="bg-black/5 backdrop-blur-3xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+    <div className="bg-black/5 border border-white/10 rounded-3xl p-8  relative overflow-hidden">
       {/* Decorative blurred background orb */}
       <div className="" />
 
@@ -192,14 +192,14 @@ export function TimerSession() {
           {/* Time Text */}
           <div className="flex flex-col items-center">
             <span
-              className={`text-2xl font-black tabular-nums tracking-tighter ${
+              className={`text-3xl font-black tabular-nums tracking-tighter ${
                 isCompleted ? "text-emerald-400" : "text-white"
               }`}
             >
               {formatTime(timeLeft)}
             </span>
             <span className="text-white/40 text-sm font-medium mt-2 uppercase tracking-widest">
-              {isCompleted ? "Done" : isActive ? "Focusing" : "Paused"}
+              {isCompleted ? "Done" : isActive ? "" : "Paused"}
             </span>
           </div>
         </div>

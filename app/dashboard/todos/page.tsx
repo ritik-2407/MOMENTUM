@@ -74,7 +74,7 @@ export default function TodoPage() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 mt-22">
         {/* LEFT COLUMN: Main Todos Area */}
         <div className="md:col-span-8 lg:col-span-8 flex flex-col gap-6">
-          <div className="bg-black/40 rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 sm:p-8 md:p-10 flex-col flex h-full">
+          <div className="bg-black/20 rounded-2xl border border-white/5 p-6 sm:p-8 md:p-10 flex-col flex h-full">
             <h1 className="text-3xl sm:text-4xl font-semibold mb-10 text-white font-poppins tracking-wide">
               So, I wanna do...
             </h1>
@@ -90,7 +90,7 @@ export default function TodoPage() {
 
         {/* RIGHT COLUMN: Sidebar Stats & Quotes */}
         <div className=" md:col-span-4 lg:col-span-4 flex flex-col gap-6">
-          <div className="order-2 md:order-1 bg-black/40 rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 flex flex-col min-h-[200px]">
+          <div className="order-2 md:order-1 bg-black/20 rounded-2xl border border-white/5 p-6 flex flex-col min-h-[200px]">
             <p className="text-[9px] tracking-[0.3em] text-white/20 uppercase mb-6">
               
             </p>

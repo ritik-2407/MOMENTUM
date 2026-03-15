@@ -47,7 +47,7 @@ export default function QuotationCard() {
   }
 
   return (
-    <div className="bg-black/40 rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 sm:p-8 flex flex-col items-center md:items-start justify-center min-h-[20px] absolute inset-0 w-full h-full transition-all duration-500">
+    <div className="bg-black/20 rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col items-center md:items-start justify-center min-h-[20px] absolute inset-0 w-full h-full transition-all duration-500">
       
      
 

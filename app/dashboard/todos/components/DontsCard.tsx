@@ -66,7 +66,7 @@ export default function DontsCard(){
     }
 
     return (
-        <div className="bg-black/40 rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-6 sm:p-8 flex flex-col w-full min-h-[300px] h-full transition-all duration-500 relative">
+        <div className="bg-black/20 rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col w-full min-h-[300px] h-full transition-all duration-500 relative">
             
             <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-xl font-light text-white/90 tracking-wide">Things to avoid today</h2>

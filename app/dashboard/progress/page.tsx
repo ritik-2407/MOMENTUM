@@ -59,14 +59,14 @@ export default function ProgressPage() {
         </div>
 
         {/* League Timeline + Badges */}
-        <div className="md:col-span-2 lg:col-span-2 relative rounded-2xl p-6 flex flex-col justify-center bg-black/40 border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] h-full min-h-[320px]">
+        <div className="md:col-span-2 lg:col-span-2 relative rounded-2xl p-6 flex flex-col justify-center bg-black/20 border border-white/5 h-full min-h-[320px]">
           <LeagueTimeline completedDays={progress?.completedDays?.length || 0} />
           <BadgeCard completedDays={progress?.completedDays?.length || 0} className="mt-4" />
         </div>
 
         {/* ROW 2 */}
         {/* Monthly streak heatmap */}
-        <div className="md:col-span-2 lg:col-span-3 min-w-0 bg-black/40 rounded-2xl border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] p-4 sm:p-6 flex items-center justify-center">
+        <div className="md:col-span-2 lg:col-span-3 min-w-0 bg-black/20 rounded-2xl border border-white/5 p-4 sm:p-6 flex items-center justify-center">
           <StreakDots completedDays={progress?.completedDays || []} />
         </div>
 
