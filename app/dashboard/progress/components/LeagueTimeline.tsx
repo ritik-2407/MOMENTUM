@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import Image from "next/image";
 
 interface LeagueTimelineProps {
   completedDays: number;
@@ -57,11 +58,9 @@ export default function LeagueTimeline({ completedDays, className = "" }: League
               className="flex flex-col items-center min-w-[50px] sm:min-w-[60px]"
             >
               {/* Icon */}
-              <img
-                src={iconSrc}
-                alt={league}
+              <div 
                 className={`
-                  object-contain transition-all duration-300
+                  relative transition-all duration-300
                   ${status === "future" ? "opacity-30 grayscale" : "opacity-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]"}
                   ${status === "current" ? "scale-110" : "scale-100"}
                   mb-2
@@ -70,7 +69,15 @@ export default function LeagueTimeline({ completedDays, className = "" }: League
                   width: size,
                   height: size,
                 }}
-              />
+              >
+                <Image
+                  src={iconSrc}
+                  alt={league}
+                  fill
+                  sizes={`${size}px`}
+                  className="object-contain"
+                />
+              </div>
 
               {/* Platform Stick */}
               <div

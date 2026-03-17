@@ -48,7 +48,7 @@ export default function StreakCard({ userId }: { userId: string }) {
 
   if (!data) {
     return (
-      <div className="w-full h-40 rounded-2xl bg-black/30 backdrop-blur-xl animate-pulse border border-white/10" />
+      <div className="w-full h-full min-h-[320px] rounded-2xl bg-black/30 backdrop-blur-xl animate-pulse border border-white/10" />
     );
   }
 

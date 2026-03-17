@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { getProgress } from "@/app/lib/frontend/getProgress";
 
 interface Progress {
@@ -72,12 +73,12 @@ export default function LevelCard() {
   }, [session, status]);
 
   if (progress === null) {
-    // New users won't have a progress document yet until they complete a Todo
+    // New users won't have a progress document yet until they complete a Todo, or it is currently loading.
     return (
-      <div className="w-sm rounded-2xl p-6 flex flex-col items-center bg-black/10 backdrop-blur-2xl border border-white/10 shadow-[0px_0px_30px_rgba(0,0,0,0.4)]">
+      <div className="w-full h-full min-h-[320px] rounded-2xl p-6 flex flex-col items-center justify-center bg-black/10 backdrop-blur-2xl border border-white/10 shadow-[0px_0px_30px_rgba(0,0,0,0.4)]">
         <h2 className="font-poppins text-xl font-bold">L E V E L</h2>
         <p className="font-poppins text-4xl font-extrabold mt-2">1</p>
-        <p className="mt-12 font-poppins text-sm text-neutral-400">Complete a Todo to start!</p>
+        <p className="mt-6 font-poppins text-sm text-neutral-400">Complete a Todo to start!</p>
       </div>
     );
   }
@@ -117,11 +118,14 @@ export default function LevelCard() {
         {/* ==== ICON WRAPPER WITH POPUP ==== */}
         <div className="relative group">
           {/* League Icon */}
-          <img
-            src={iconSrc}
-            alt={`${league} icon`}
-            className="w-[72px] h-[72px] object-contain cursor-pointer transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]"
-          />
+          <div className="w-[72px] h-[72px] relative cursor-pointer transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]">
+            <Image
+              src={iconSrc}
+              alt={`${league} icon`}
+              fill
+              className="object-contain"
+            />
+          </div>
 
           {/* Hover Popup */}
           <div
