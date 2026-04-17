@@ -1,5 +1,4 @@
 import { TimerSession } from "./components/TimerSession";
-import { MusicPlayer } from "./components/MusicPlayer";
 import Image from "next/image";
 
 export default function StudySpacePage() {
@@ -19,17 +18,13 @@ export default function StudySpacePage() {
       </div>
 
       {/* ── CONTENT ── */}
-      <div className="relative z-10 p-4 sm:p-6 lg:p-8 xl:p-10 max-w-[1800px] mx-auto min-h-[100dvh] lg:min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-12 sm:gap-16 lg:gap-0 mt-8 mb-16 lg:my-0 pb-16 lg:pb-0">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8 xl:p-10 max-w-[1800px] mx-auto min-h-[100dvh] lg:min-h-screen flex flex-col items-center justify-center gap-12 sm:gap-16 mt-8 mb-16 lg:my-0 pb-16 lg:pb-0">
         
         {/* ── LEFT CENTER WIDGET ── */}
         <div className="w-full w-[95%] sm:max-w-xl lg:max-w-xl px-2 sm:px-4 lg:mx-14 lg:mb-20 mx-auto">
           <TimerSession />
         </div>
 
-        {/* ── RIGHT CENTER WIDGET ── */}
-        <div className="w-full w-[95%] sm:max-w-md lg:max-w-md px-2 sm:px-4 lg:mx-0 mx-auto">
-          <MusicPlayer />
-        </div>
       </div>
     </div>
   );

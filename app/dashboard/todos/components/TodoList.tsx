@@ -18,14 +18,20 @@ export default function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
   const renderTodoItem = (todo: Todo, textStyle: string) => (
     <div
       key={todo._id}
-      className={`group flex items-center justify-between p-4 border-b border-white/5 transition-all duration-300 hover:bg-white/[0.02] last:border-0 ${
+      role="button"
+      tabIndex={0}
+      onClick={() => onToggle(todo._id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle(todo._id);
+        }
+      }}
+      className={`group flex items-center justify-between p-4 border-b border-white/5 transition-all duration-300 hover:bg-white/[0.02] last:border-0 cursor-pointer ${
         todo.status ? "opacity-20 line-through" : "opacity-100"
       }`}
     >
-      <button
-        onClick={() => onToggle(todo._id)}
-        className="flex items-center gap-4 w-full  text-left group cursor-pointer"
-      >
+      <div className="flex items-center gap-4 w-full text-left">
         {/* Checkbox */}
         <div
           className={`w-5 h-5 rounded-full border flex-shrink-0 flex items-center justify-center transition-all duration-300 ${
@@ -43,11 +49,14 @@ export default function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
         >
           {todo.todo}
         </span>
-      </button>
+      </div>
 
       {/* Delete button: Invisible until hovered to keep UI clean */}
       <button
-        onClick={() => onDelete(todo._id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete(todo._id);
+        }}
         className="cursor-pointer text-[11px] uppercase tracking-wider text-transparent group-hover:text-red-400 hover:!text-white/80 transition-colors"
       >
         Remove
