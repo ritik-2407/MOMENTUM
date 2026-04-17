@@ -1,152 +1,100 @@
-# Momentum
+<div align="center">
+  <img src="public/favicon.ico" alt="Momentum Logo" width="100"/>
+  <h1>Master Your Monkey Brain.</h1>
+  <p>A productivity system built on psychology, streak power, and gamification. No noise, just execution.</p>
+</div>
 
-Momentum is not another typical productivity app , it is built upon human psychology and mind behaviours.
+---
 
-Momentum is not here to motivate you. It's here to outsmart your procrastination using systems, structure, and just enough psychological pressure to keep you moving.
+## What is Momentum?
 
-If your brain loves streaks, levels, and not "losing progress" — congrats, Momentum uses that against you (nicely).
+Momentum is not another typical to-do list. It isn't here to motivate you with inspirational quotes or abstract "productivity frameworks". 
 
-## Why Momentum Exists
+It is designed to outsmart your procrastination. If your brain loves streaks, levels, and "not losing progress"—Momentum uses that against you (nicely). We eliminate the noise so you only focus on execution. 
 
-Let's be honest:
+<br />
 
-- You don't need another todo app
-- You don't need inspirational quotes yelling at you
-- You don't need a 12-step productivity framework
+## Why Momentum Actually Works
 
-You need something that:
+1. **Behavior Hacking**
+   Momentum uses gamified psychology. Your brain gets tricked into wanting to stay consistent because breaking a streak hurts more than doing the work.
+   
+2. **Leagues & Levels System**
+   Rank up from *Gold-fish* to *OUTLIER*. You level up daily based on your consistency, penalizing you when you disappear but rewarding you for showing up.
 
-- Makes doing the task easier than avoiding it
-- Punishes inconsistency just enough to hurt
-- Rewards showing up, even on bad days
+3. **Study Space**
+   A dedicated focus zone equipped with a timer session and immersive backgrounds, allowing you to lock in without distractions.
 
-Momentum is built for execution, not planning theater.
+4. **Todos & "Don'ts"**
+   Track tasks based on their importance, while also tracking "Don'ts" (anti-habits that you must avoid to keep your streak intact).
+   
+5. **Clean AF UI**
+   A dark-mode, glassmorphic design built with Framer Motion and Tailwind CSS. No clutter, zero noise. Just you and an interface that keeps you completely honest.
 
-## What Momentum Actually Does
+<br />
 
-### Tiered Tasks (A / B / C)
+## Tech Stack
 
-Because not all tasks deserve equal respect.
+Momentum is built as a fast, robust full-stack application relying on the modern React ecosystem. 
 
-- **A Tasks** → Do today or feel guilty
-- **B Tasks** → Important, but life happens
-- **C Tasks** → Optional, chill, no pressure
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Database**: [MongoDB](https://www.mongodb.com/) via Mongoose
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/) (Full Multi-User Auth)
+- **Styling**: Tailwind CSS V4, Framer Motion, Vanilla CSS
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Visuals**: React Three Fiber, Vanta, OGL
 
-This system forces you to prioritize like an adult, not dump 37 tasks and pretend you'll do them all.
+<br />
 
-### 🔥 Streaks
+## Project Structure
 
-Your brain hates breaking streaks. Momentum remembers that.
+- `app/` – Core Next.js App Router application
+  - `page.tsx` - Sleek Landing Page with Framer Motion animations
+  - `dashboard/` - Main gamified application view
+    - `study-space/` - Immersive Pomodoro / Timer Area
+    - `todos/` - Task management 
+    - `progress/` - Charts and league standings
+  - `api/` – Mongoose-backed API routes for handling `Todos`, `Donts`, `Habits`, `Users`, and NextAuth
+  - `lib/models/` – Database Schemas
+- `components/` – Reusable UI pieces, Navigation
+- `public/` – Icons, backgrounds, gamification badges (League tiers)
 
-- Daily task streaks
-- Habit streaks
-- Visual reminders when you're about to mess it up
+<br />
 
-Once a streak exists, your brain does the work for you.
+## Setup & Local Development
 
-### 🏆 Leagues
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/ritik-2407/momentum.git
+   cd momentum
+   ```
 
-Because effort feels better when it's ranked.
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-- Move up leagues by staying consistent
-- Fall down when you disappear
-- No mercy, no excuses
+3. **Setup Environment Variables**
+   Create a `.env.local` file in the root. Example needed variables:
+   ```env
+   MONGODB_URI=your_mongo_url
+   NEXTAUTH_SECRET=your_nextauth_string
+   NEXTAUTH_URL=http://localhost:3000
+   ```
 
-Momentum doesn't shame you — it just shows the truth.
+4. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-### 🎮 Levels
+<br />
 
-You're always leveling up. Or stagnating.
+## The Philosophy
 
-- XP for completing tasks
-- XP for habits
-- XP for consistency
-
-Momentum turns discipline into a progress bar your brain wants to fill.
-
-### 🏅 Badges
-
-Small rewards. Big psychological impact.
-
-- Consistency badges
-- Comeback badges
-- "Didn't quit when it got boring" badges
-
-They don't change your life. They change whether you show up tomorrow.
-
-### 📅 Calendar View
-
-Because vibes don't lie.
-
-- See productive days
-- See dead days
-- Patterns become obvious very fast
-
-Momentum doesn't sugarcoat your month.
-
-### 📊 Charts & Progress Tracking
-
-Pretty graphs. Brutally honest meaning.
-
-- Tasks completed over time
-- Habit consistency trends
-- Streak history
-
-If progress exists, you'll see it. If it doesn't… well, you'll see that too.
-
-## How It's Built
-
-Momentum is a full-stack MERN application, built with clarity over cleverness.
-
-### Tech Stack
-
-- **Frontend & Backend:** NEXT.js
-- **Database:** MongoDB
-- **Environment config:** dotenv
-
-### Philosophy
-
-- Backend-first development
-- No premature overengineering
-- No fake "enterprise-ready" nonsense
-- Systems before polish
-
-Everything exists to support action, not impress recruiters with buzzwords.
-
-## Important: Current Limitations
-
-Momentum is still evolving. Some things are intentionally not done yet.
-
-### Authentication
-
-- ❌ No solid production-grade auth yet
-- ❌ No JWT / OAuth / session-based system finalized
-- Currently assumes a controlled environment
-
-### Multi-User Support
-
-- ❌ Not multi-user yet
-- ❌ No per-user data separation
-- Schemas are currently optimized for fast iteration
-
-This is deliberate. The goal was to:
-
-- Nail the core behavior system
-- Validate the workflow
-- Avoid drowning in auth complexity too early
-
-Auth and multi-user support are planned after the core loop proves itself.
-
-## What Momentum Is Not
-
-- Not a motivational app
-- Not a habit influencer clone
-- Not a "write goals and manifest" tool
-
-**Momentum is a discipline engine.**
-
-## Short Version
-
-Momentum doesn't ask "How do you feel today?" It asks "Did you show up?"
-
+Momentum acts as a **discipline engine**. 
+It doesn't ask "How do you feel today?"
+It asks **"Did you show up?"**
 And then it remembers the answer.
+
+
