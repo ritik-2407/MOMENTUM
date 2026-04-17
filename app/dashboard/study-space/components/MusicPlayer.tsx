@@ -30,6 +30,7 @@ const TRACKS = [
   }
 ];
 
+
 export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTrackId, setActiveTrackId] = useState(TRACKS[0].id);

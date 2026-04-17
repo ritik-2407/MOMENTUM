@@ -32,11 +32,16 @@ export async function GET() {
     }
 
     // Fetch completed todos in the window
-    const completedTodos = await Todo.find({
-      userId,
-      status: true,
-      updatedAt: { $gte: tenDaysAgo },
-    }).lean();
+    const completedTodos = await Todo.find(
+      {
+        userId,
+        status: true,
+        updatedAt: { $gte: tenDaysAgo },
+      },
+      { updatedAt: 1, _id: 0 }
+    )
+      .sort({ updatedAt: -1 })
+      .lean();
 
     // Group by date
     completedTodos.forEach((todo: any) => {

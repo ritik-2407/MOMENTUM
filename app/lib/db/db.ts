@@ -1,19 +1,33 @@
 import mongoose from "mongoose";
 
 const MONGO_URI = process.env.MONGODB_CONNECTION_STRING; // your fixed DB URL
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __mongooseCache: MongooseCache | undefined;
+}
+
+const cached: MongooseCache = global.__mongooseCache ?? { conn: null, promise: null };
+global.__mongooseCache = cached;
 
 export async function connectDB(): Promise<void> {
-  // If already connected, reuse the existing connection
-  if (mongoose.connection.readyState === 1) return;
+  if (cached.conn || mongoose.connection.readyState === 1) return;
 
   try {
     if (!MONGO_URI) {
       throw new Error("MongoDB URI is missing. Please set it in db.ts");
     }
 
-    await mongoose.connect(MONGO_URI, {
-      dbName: "todo_app", // optional, but cleaner
-    });
+    if (!cached.promise) {
+      cached.promise = mongoose.connect(MONGO_URI, {
+        dbName: "todo_app", // optional, but cleaner
+      });
+    }
+    cached.conn = await cached.promise;
 
     console.log("🟢 MongoDB connected successfully");
 

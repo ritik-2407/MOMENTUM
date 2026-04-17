@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import React from "react";
+
 interface BadgeCardProps {
   completedDays: number;
   className?: string;
@@ -9,7 +12,7 @@ const BADGE_MILESTONES = [
   5,10,20,30,50,75,100,250
 ];
 
-export default function BadgeCard({ completedDays, className = "" }: BadgeCardProps) {
+function BadgeCardComponent({ completedDays, className = "" }: BadgeCardProps) {
   return (
     <div className={`w-full flex flex-col ${className}`}>
       
@@ -25,17 +28,16 @@ export default function BadgeCard({ completedDays, className = "" }: BadgeCardPr
               key={milestone}
               className="flex flex-col items-center w-[50px] sm:w-[60px]"
             >
-              <img
+              <Image
                 src={`/badges/animals/${milestone}.png`}
                 alt={`${milestone} day badge`}
+                width={36}
+                height={36}
+                loading="lazy"
                 className={`
                   object-contain transition-all duration-300
                   ${unlocked ? "opacity-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] hover:scale-110" : "opacity-20 grayscale brightness-75"}
                 `}
-                style={{
-                  width: 36,
-                  height: 36,
-                }}
               />
               <p className={`
                   mt-2 text-[11px] transition-all duration-200
@@ -54,3 +56,6 @@ export default function BadgeCard({ completedDays, className = "" }: BadgeCardPr
     </div>
   );
 }
+
+const BadgeCard = React.memo(BadgeCardComponent);
+export default BadgeCard;

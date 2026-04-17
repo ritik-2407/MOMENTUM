@@ -2,13 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import StreakDots from "./components/StreakDots";
+import dynamic from "next/dynamic";
 import StreakCard from "./components/StreakCard";
 import LevelCard from "./components/LevelCard";
 import LeagueTimeline from "./components/LeagueTimeline";
-import DailyTodoGraph from "./components/DailyTodoGraph";
 import BadgeCard from "./components/BadgeCard";
 import Cookie from "./components/Cookie";
+
+const StreakDots = dynamic(() => import("./components/StreakDots"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[250px] animate-pulse bg-white/5 rounded-2xl border border-white/10" />
+  ),
+});
+
+const DailyTodoGraph = dynamic(() => import("./components/DailyTodoGraph"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full min-h-[350px] animate-pulse bg-white/5 rounded-2xl border border-white/10" />
+  ),
+});
 
 interface UserProgress {
   streak: number;
@@ -20,20 +33,29 @@ export default function ProgressPage() {
   const [progress, setProgress] = useState<UserProgress | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fetchProgress() {
       if (status === "authenticated" && session?.user) {
         try {
           // @ts-ignore
-          const res = await fetch(`/api/progress/${session.user.id}`, { cache: "no-store" });
+          const res = await fetch(`/api/progress/${session.user.id}`, {
+            cache: "no-store",
+            signal: controller.signal,
+          });
           if (!res.ok) throw new Error("Failed to fetch progress");
           const data = await res.json();
           setProgress(data || { streak: 0, completedDays: [] });
-        } catch (err) {
+        } catch (err: any) {
+          if (err?.name === "AbortError") return;
           console.error(err);
+          setProgress({ streak: 0, completedDays: [] });
         }
       }
     }
     fetchProgress();
+
+    return () => controller.abort();
   }, [session, status]);
 
   return (
@@ -67,15 +89,12 @@ export default function ProgressPage() {
             {/* ROW 1 */}
             {/* Level */}
             <div className="lg:col-span-1 h-full">
-              <LevelCard />
+              <LevelCard completedDays={progress.completedDays?.length || 0} />
             </div>
 
             {/* Streak */}
             <div className="lg:col-span-1 h-full">
-              {status === "authenticated" && session?.user ? (
-                // @ts-ignore
-                <StreakCard userId={session.user.id} />
-              ) : null}
+              <StreakCard streak={progress.streak || 0} />
             </div>
 
             {/* League Timeline + Badges */}

@@ -27,4 +27,7 @@ const todoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Optimizes todo-stats query by matching filter and range scan order.
+todoSchema.index({ userId: 1, status: 1, updatedAt: -1 });
+
 export default mongoose.models.Todo || mongoose.model("Todo", todoSchema);

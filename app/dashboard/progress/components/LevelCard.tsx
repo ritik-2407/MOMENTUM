@@ -1,13 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { getProgress } from "@/app/lib/frontend/getProgress";
-
-interface Progress {
-  completedDays: { date: string }[];
-}
 
 const getLeague = (completed: number) => {
   if (completed < 5) return "Gold-fish";
@@ -55,35 +48,12 @@ const requiredDays: Record<string, number> = {
   OUTLIER: 250,
 };
 
-export default function LevelCard() {
-  const { data: session, status } = useSession();
-  const [progress, setProgress] = useState<Progress | null>(null);
+interface LevelCardProps {
+  completedDays: number;
+}
 
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      // @ts-ignore
-      fetch(`/api/progress/${session.user.id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch");
-          return res.json();
-        })
-        .then((data) => setProgress(data))
-        .catch((err) => console.error(err));
-    }
-  }, [session, status]);
-
-  if (progress === null) {
-    // New users won't have a progress document yet until they complete a Todo, or it is currently loading.
-    return (
-      <div className="w-full h-full min-h-[320px] rounded-2xl p-6 flex flex-col items-center justify-center bg-black/10 backdrop-blur-2xl border border-white/10 shadow-[0px_0px_30px_rgba(0,0,0,0.4)]">
-        <h2 className="font-poppins text-xl font-bold">L E V E L</h2>
-        <p className="font-poppins text-4xl font-extrabold mt-2">1</p>
-        <p className="mt-6 font-poppins text-sm text-neutral-400">Complete a Todo to start!</p>
-      </div>
-    );
-  }
-
-  const completed = progress.completedDays?.length || 0;
+export default function LevelCard({ completedDays }: LevelCardProps) {
+  const completed = completedDays;
   const level = Math.floor(completed / 3) + 1;
 
   const league = getLeague(completed);

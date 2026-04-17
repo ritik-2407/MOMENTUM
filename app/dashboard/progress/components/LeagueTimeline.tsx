@@ -31,7 +31,7 @@ function getLeague(completed: number) {
   return "OUTLIER";
 }
 
-export default function LeagueTimeline({ completedDays, className = "" }: LeagueTimelineProps) {
+function LeagueTimelineComponent({ completedDays, className = "" }: LeagueTimelineProps) {
  const currentLeague = useMemo(() => getLeague(completedDays), [completedDays]);
   const currentIndex = LEAGUES.indexOf(currentLeague);
 
@@ -75,6 +75,8 @@ export default function LeagueTimeline({ completedDays, className = "" }: League
                   alt={league}
                   fill
                   sizes={`${size}px`}
+                  loading={status === "current" ? "eager" : "lazy"}
+                  priority={status === "current"}
                   className="object-contain"
                 />
               </div>
@@ -107,3 +109,6 @@ export default function LeagueTimeline({ completedDays, className = "" }: League
     </div>
   );
 }
+
+const LeagueTimeline = React.memo(LeagueTimelineComponent);
+export default LeagueTimeline;

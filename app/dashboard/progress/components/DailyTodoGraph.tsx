@@ -128,7 +128,11 @@ export default function DailyTodoGraph({
 }: {
   api?: string;
 }) {
-  const { data, error } = useSWR(api, fetcher, { refreshInterval: 30_000 });
+  const { data, error } = useSWR(api, fetcher, {
+    refreshInterval: 120_000,
+    revalidateOnFocus: false,
+    dedupingInterval: 60_000,
+  });
   const snapshotsRef = useRef<Record<string, number>>({});
 
   const isLoading = !data && !error;
@@ -146,11 +150,11 @@ export default function DailyTodoGraph({
       <div className="relative w-full h-full flex flex-col bg-black/20 rounded-2xl border border-white/5 p-6 min-h-[350px]">
         <p className="font-poppins text-sm tracking-wide text-[#a8a8a8] mb-4">Daily Todos</p>
         <div className="flex-1 flex items-end gap-2 pb-6 px-2">
-          {Array.from({ length: 7 }).map((_, i) => (
+          {[24, 48, 32, 60, 36, 52, 40].map((height, i) => (
             <div
               key={i}
               className="flex-1 rounded-sm animate-pulse bg-white/5"
-              style={{ height: `${20 + Math.random() * 40}%` }}
+              style={{ height: `${height}%` }}
             />
           ))}
         </div>

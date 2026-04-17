@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface CompletedDay {
   date: string | Date;
@@ -15,32 +15,56 @@ const MONTHS = [
   "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
 ];
 
-export default function MonthlyStreakBoxes({ completedDays }: MonthlyStreakBoxesProps) {
-  // Convert completedDays into: { 0: [dates], 1: [dates], ... }
-  const groupedByMonth: Record<number, Date[]> = {};
+function MonthlyStreakBoxesComponent({ completedDays }: MonthlyStreakBoxesProps) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [viewport, setViewport] = useState<"mobile" | "tablet" | "desktop">("desktop");
 
-  completedDays.forEach(({ date }) => {
-    const d = new Date(date);
-    const month = d.getMonth();
-    if (!groupedByMonth[month]) groupedByMonth[month] = [];
-    groupedByMonth[month].push(d);
-  });
+  useEffect(() => {
+    setIsMounted(true);
+    const setView = () => {
+      if (window.innerWidth < 640) {
+        setViewport("mobile");
+      } else if (window.innerWidth < 1024) {
+        setViewport("tablet");
+      } else {
+        setViewport("desktop");
+      }
+    };
+
+    setView();
+    window.addEventListener("resize", setView);
+    return () => window.removeEventListener("resize", setView);
+  }, []);
+
+  // Convert completedDays into: { 0: [dates], 1: [dates], ... }
+  const groupedByMonth = useMemo(() => {
+    const grouped: Record<number, Set<number>> = {};
+    completedDays.forEach(({ date }) => {
+      const d = new Date(date);
+      const month = d.getMonth();
+      if (!grouped[month]) grouped[month] = new Set<number>();
+      grouped[month].add(d.getDate());
+    });
+    return grouped;
+  }, [completedDays]);
 
   const currentMonthIndex = new Date().getMonth();
-
-  // Create an array for the last 4 months (for mobile view)
-  const mobileMonthsIndices = Array.from({ length: 4 }, (_, i) => {
-    let m = currentMonthIndex - 3 + i;
-    if (m < 0) m += 12; // wrap around to previous year
-    return m;
-  });
+  const mobileMonthsIndices = useMemo(
+    () =>
+      Array.from({ length: 4 }, (_, i) => {
+        let m = currentMonthIndex - 3 + i;
+        if (m < 0) m += 12; // wrap around to previous year
+        return m;
+      }),
+    [currentMonthIndex]
+  );
 
   // Helper to render a single month card
   const renderMonthCard = (monthIndex: number, isMobile: boolean) => {
     const name = MONTHS[monthIndex];
-    const days = groupedByMonth[monthIndex] || [];
+    const daySet = groupedByMonth[monthIndex] || new Set<number>();
     const dots = Array.from({ length: 31 }, (_, i) => {
-      const filled = days.some(d => d.getDate() === i + 1);
+      const filled = daySet.has(i + 1);
       const ratio = filled ? (i + 1) / 31 : 0;
       const intensity = Math.floor(100 + 155 * ratio);
 
@@ -71,22 +95,33 @@ export default function MonthlyStreakBoxes({ completedDays }: MonthlyStreakBoxes
     );
   };
 
-  return (
-    <div className="w-full mt-2 flex flex-col items-center">
-      {/* --- DESKTOP VIEW (All 12 months, 6 cols max) --- */}
-      <div className="hidden lg:grid grid-cols-6 gap-x-3 gap-y-4 w-full justify-items-center max-w-[1000px]">
-        {MONTHS.map((_, i) => renderMonthCard(i, false))}
-      </div>
+  // Avoid hydration mismatch while waiting for viewport detection.
+  if (!isMounted) {
+    return <div className="w-full mt-2 min-h-[140px]" />;
+  }
 
-      {/* --- TABLET VIEW (All 12 months, 4 cols max) --- */}
-      <div className="hidden sm:grid lg:hidden grid-cols-3 md:grid-cols-4 gap-x-3 gap-y-4 w-full justify-items-center">
-        {MONTHS.map((_, i) => renderMonthCard(i, false))}
-      </div>
-
-      {/* --- MOBILE VIEW (Last 4 months, 2 cols max) --- */}
-      <div className="grid sm:hidden grid-cols-2 gap-x-3 gap-y-4 w-full justify-items-center max-w-[400px]">
+  if (viewport === "mobile") {
+    return (
+      <div className="w-full mt-2 grid grid-cols-2 gap-x-3 gap-y-4 justify-items-center max-w-[400px] mx-auto">
         {mobileMonthsIndices.map((i) => renderMonthCard(i, true))}
       </div>
+    );
+  }
+
+  if (viewport === "tablet") {
+    return (
+      <div className="w-full mt-2 grid grid-cols-3 md:grid-cols-4 gap-x-3 gap-y-4 justify-items-center">
+        {MONTHS.map((_, i) => renderMonthCard(i, false))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full mt-2 grid grid-cols-6 gap-x-3 gap-y-4 justify-items-center max-w-[1000px] mx-auto">
+      {MONTHS.map((_, i) => renderMonthCard(i, false))}
     </div>
   );
 }
+
+const MonthlyStreakBoxes = React.memo(MonthlyStreakBoxesComponent);
+export default MonthlyStreakBoxes;

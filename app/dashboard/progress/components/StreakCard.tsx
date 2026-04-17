@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Flame } from "lucide-react";
 
-interface ProgressData {
+interface StreakCardProps {
   streak: number;
-  lastUpdated?: string;
 }
 
-export default function StreakCard({ userId }: { userId: string }) {
-  const [data, setData] = useState<ProgressData | null>(null);
-
+export default function StreakCard({ streak }: StreakCardProps) {
   const streakMessages: Record<number, string> = {
   1: "It's never too late to start.",
   2: "Its just day two and you're looking here like we'll give you some validation lmao",
@@ -29,28 +25,6 @@ export default function StreakCard({ userId }: { userId: string }) {
   100: "Centurion status! You've mastered the art of consistency.",
 };
 
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch(`/api/progress/${userId}`, { cache: "no-store" });
-        console.log(res);
-        if (!res.ok) throw new Error("Failed to fetch streak");
-        const json = await res.json();
-        setData(json || { streak: 0 });
-      } catch (err) {
-        console.error(err);
-        setData({ streak: 0 }); // Fallback for new users or errors
-      }
-    }
-    load();
-  }, [userId]);
-
-  if (!data) {
-    return (
-      <div className="w-full h-full min-h-[320px] rounded-2xl bg-black/30 backdrop-blur-xl animate-pulse border border-white/10" />
-    );
-  }
 
   return (
     <div className="
@@ -88,13 +62,13 @@ export default function StreakCard({ userId }: { userId: string }) {
           drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]
           animate-[fadeIn_0.5s_ease-out]
         ">
-          {data.streak}
+          {streak}
         </p>
       </div>
 
       {/* Footer message */}
       <p className="mt-auto font-poppins text-[15px] text-center text-[#6b6b6b] leading-relaxed max-w-[80%]">
-        {streakMessages[data.streak] || "Zero days down. Only one way up!"}
+        {streakMessages[streak] || "Zero days down. Only one way up!"}
       </p>
     </div>
   );
