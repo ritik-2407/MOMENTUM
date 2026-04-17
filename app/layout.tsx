@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Josefin_Sans } from "next/font/google";
-import { Poppins, Roboto} from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
 
@@ -12,17 +12,7 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-const josefin = Josefin_Sans({
-  variable: "--font-poppins",
-  weight: ["400", "600", "700"],
-  subsets: ["latin"],
-});
 
-const roboto = Roboto({
-  variable: "--font-roboto",
-  weight: ["400", "700"],
-  subsets: ["latin"],
-});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,9 +44,6 @@ export default function RootLayout({
           ${geistSans.variable} 
           ${geistMono.variable} 
           ${poppins.variable}
-           ${roboto.variable}
-           ${josefin.variable}
-
           antialiased 
           relative 
           min-h-screen 

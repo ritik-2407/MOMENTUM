@@ -7,9 +7,7 @@
   font-family: var(--font-poppins);
 }
 
-.font-roboto {
-  font-family: var(--font-roboto);
-}
+
 
 :root {
   --background: #ffffff;

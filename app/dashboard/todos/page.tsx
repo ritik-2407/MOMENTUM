@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
-import Clock from "@/app/components/Clock";
 import ProgressCircle from "./components/ProgressCircle";
 import QuotationCard from "./components/QuotationCard";
 import DontsCard from "./components/DontsCard";
