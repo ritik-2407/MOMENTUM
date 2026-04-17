@@ -46,7 +46,7 @@ function LeagueTimelineComponent({ completedDays, className = "" }: LeagueTimeli
           const status =
             idx < currentIndex ? "past" : idx === currentIndex ? "current" : "future";
 
-          const iconSrc = `/leagueIcons/animals/${league}.webp`;
+          const iconSrc = `/leagueIcons/animals/${league}.WebP`;
 
           // Taller platforms for higher leagues, but visually distinct
           const platformHeight = 12 + idx * 4; 

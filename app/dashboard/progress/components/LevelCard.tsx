@@ -14,14 +14,14 @@ const getLeague = (completed: number) => {
 };
 
 const leagueIcons: Record<string, string> = {
-  "Gold-fish": "/leagueIcons/animals/Gold-fish.webp",
-  Slowth: "/leagueIcons/animals/Slowth.webp",
-  "A-dolph": "/leagueIcons/animals/A-dolph.webp",
-  Foxi: "/leagueIcons/animals/Foxi.webp",
-  Wolfyy: "/leagueIcons/animals/Wolfyy.webp",
-  Octas: "/leagueIcons/animals/Octas.webp",
-  EAGUL: "/leagueIcons/animals/EAGUL.webp",
-  OUTLIER: "/leagueIcons/animals/OUTLIER.webp",
+  "Gold-fish": "/leagueIcons/animals/Gold-fish.WebP",
+  Slowth: "/leagueIcons/animals/Slowth.WebP",
+  "A-dolph": "/leagueIcons/animals/A-dolph.WebP",
+  Foxi: "/leagueIcons/animals/Foxi.WebP",
+  Wolfyy: "/leagueIcons/animals/Wolfyy.WebP",
+  Octas: "/leagueIcons/animals/Octas.WebP",
+  EAGUL: "/leagueIcons/animals/EAGUL.WebP",
+  OUTLIER: "/leagueIcons/animals/OUTLIER.WebP",
 };
 
 // Small descriptions

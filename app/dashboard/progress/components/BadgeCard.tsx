@@ -29,7 +29,7 @@ function BadgeCardComponent({ completedDays, className = "" }: BadgeCardProps) {
               className="flex flex-col items-center w-[50px] sm:w-[60px]"
             >
               <Image
-                src={`/badges/animals/${milestone}.webp`}
+                src={`/badges/animals/${milestone}.WebP`}
                 alt={`${milestone} day badge`}
                 width={36}
                 height={36}
