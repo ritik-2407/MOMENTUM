@@ -251,7 +251,7 @@ export default function Home() {
           Stop scrolling.
         </h2>
         <p className="text-xl text-white/40 mb-10">
-          Lock-in lil bro.
+          Time to Lock-in.
         </p>
         <Link
           href="/signUp"

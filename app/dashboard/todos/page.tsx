@@ -89,20 +89,20 @@ export default function TodoPage() {
 
         {/* RIGHT COLUMN: Sidebar Stats & Quotes */}
         <div className=" md:col-span-4 lg:col-span-4 flex flex-col gap-6">
-          <div className="order-2 md:order-1 bg-black/20 rounded-2xl border border-white/5 p-6 flex flex-col min-h-[200px]">
-            <p className="text-[9px] tracking-[0.3em] text-white/20 uppercase mb-6">
-              
-            </p>
+           <div className="order-1 md:order-1 h-auto min-h-[350px] relative">
+            <DontsCard />
+          </div>
+
+          <div className="order-2 md:order-2 bg-black/20 rounded-2xl border border-white/5 p-6 flex flex-col min-h-[200px]">
+            
+            <h1 className="text-3xl sm:text-2xl font-semibold mb-10 text-white/40 font-poppins tracking-wide">
+              Progress
+            </h1>
             <ProgressCircle todos={todos} size={110} />
           </div>
 
-           <div className="order-1 md:order-2 h-260px min-h-[250px] relative">
-            <DontsCard />
-          </div>
           {/* Quotation Card Wrapper */}
-          <div className="order-3 md:order-3 h-260px min-h-[150px] relative">
-            <QuotationCard />
-          </div>
+          
         </div>
       </div>
     </div>

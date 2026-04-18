@@ -66,10 +66,10 @@ export default function DontsCard(){
     }
 
     return (
-        <div className="bg-black/20 rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col w-full min-h-[300px] h-full transition-all duration-500 relative">
+        <div className="bg-black/20 rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col w-full min-h-[450px] h-auto transition-all duration-500 relative">
             
             <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-xl font-light text-white/90 tracking-wide">Things to avoid today</h2>
+                <h2 className="text-3xl sm:text-3xl font-semibold mb-10 text-white font-poppins tracking-wide">Things to avoid today</h2>
             </div>
             
             <form onSubmit={addDont} className="mb-6 flex w-full gap-3">
@@ -85,7 +85,7 @@ export default function DontsCard(){
                 </button>
             </form>
 
-            <div className="flex flex-col gap-2 overflow-y-auto pr-2 flex-grow">
+            <div className="flex flex-col gap-2 pr-2 flex-grow">
                 {isLoading ? (
                     <div className="flex items-center justify-center h-full text-white/20 italic text-sm font-light mt-10">
                         Loading...
