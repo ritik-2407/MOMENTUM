@@ -44,7 +44,7 @@ export default function ProgressCircle({
 
   return (
     <div className="w-full flex items-center gap-6">
-
+      
       {/* ── LEFT: Main arc ── */}
       <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="-rotate-90 transform absolute inset-0">

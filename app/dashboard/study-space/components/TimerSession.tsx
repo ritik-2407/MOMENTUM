@@ -9,11 +9,59 @@ export function TimerSession() {
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   const [customMin, setCustomMin] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("momentum_timer_state");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setGoal(parsed.goal || "");
+        setDuration(parsed.duration || 25 * 60);
+        
+        if (parsed.isActive) {
+          const now = Date.now();
+          const elapsedSeconds = Math.floor((now - parsed.lastTick) / 1000);
+          const newTimeLeft = Math.max(0, parsed.timeLeft - elapsedSeconds);
+          
+          if (newTimeLeft === 0) {
+            setIsActive(false);
+            setIsCompleted(true);
+            setTimeLeft(0);
+          } else {
+            setTimeLeft(newTimeLeft);
+            setIsActive(true);
+            setIsCompleted(false);
+          }
+        } else {
+          setTimeLeft(parsed.timeLeft !== undefined ? parsed.timeLeft : parsed.duration || 25 * 60);
+          setIsActive(false);
+          setIsCompleted(parsed.isCompleted || false);
+        }
+      } catch (e) {
+        console.error("Failed to parse timer state", e);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("momentum_timer_state", JSON.stringify({
+        goal,
+        duration,
+        timeLeft,
+        isActive,
+        isCompleted,
+        lastTick: Date.now()
+      }));
+    }
+  }, [goal, duration, timeLeft, isActive, isCompleted, isLoaded]);
 
   const presets = [
     { label: "15m", value: 15 * 60 },
@@ -61,8 +109,13 @@ export function TimerSession() {
 
   const handleCustomSet = (e: React.FormEvent) => {
     e.preventDefault();
-    const min = parseInt(customMin);
+    let min = parseInt(customMin);
     if (!isNaN(min) && min > 0) {
+      if (min > 720) {
+        min = 720;
+        alert("Maximum timer duration is 12 hours (720 minutes).");
+        setCustomMin("720");
+      }
       const seconds = min * 60;
       setDuration(seconds);
       setTimeLeft(seconds);
@@ -183,8 +236,8 @@ export function TimerSession() {
             />
             <defs>
               <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#34d399" /> {/* Emerald 400 */}
-                <stop offset="100%" stopColor="#059669" /> {/* Emerald 600 */}
+                <stop offset="0%" stopColor="#ffffffff" /> {/* Emerald 400 */}
+                <stop offset="100%" stopColor="#ffffffff" /> {/* Emerald 600 */}
               </linearGradient>
             </defs>
           </svg>
