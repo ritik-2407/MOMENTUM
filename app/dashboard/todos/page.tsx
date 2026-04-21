@@ -19,6 +19,8 @@ export default function TodoPage() {
 
   useEffect(() => {
     fetchTodos();
+    // Fire-and-forget cleanup of buckets older than 14 days
+    fetch("/api/todos/cleanup", { method: "POST" }).catch(() => {});
   }, []);
 
   async function fetchTodos() {

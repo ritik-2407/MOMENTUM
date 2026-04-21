@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import Todo from "../../lib/models/Todo.model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { getStreakDay } from "../../lib/utils/getStreakDay";
 
 export async function POST(req: Request) {
   try {
@@ -22,10 +23,11 @@ export async function POST(req: Request) {
     }
       */}
 
-    const newTodo = await Todo.create({ 
-      todo, 
+    const newTodo = await Todo.create({
+      todo,
       tier,
-      userId: (session.user as any).id 
+      userId: (session.user as any).id,
+      dayBucket: getStreakDay(),
     });
     
     return NextResponse.json({ message: "Todo created successfully", todo: newTodo }, { status: 201 });
@@ -46,7 +48,10 @@ export async function GET() {
     }
 
     await connectDB();
-    const todos = await Todo.find({ userId: (session.user as any).id });
+    const todos = await Todo.find({
+      userId: (session.user as any).id,
+      dayBucket: getStreakDay(),
+    });
     return NextResponse.json({ todos }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
