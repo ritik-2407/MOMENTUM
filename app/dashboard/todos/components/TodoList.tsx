@@ -57,7 +57,7 @@ export default function TodoList({ todos, onToggle, onDelete }: TodoListProps) {
           e.stopPropagation();
           onDelete(todo._id);
         }}
-        className="cursor-pointer text-[11px] uppercase tracking-wider text-transparent group-hover:text-red-400 hover:!text-white/80 transition-colors"
+        className="cursor-pointer text-[11px] uppercase tracking-wider text-red-400/30 md:text-transparent md:group-hover:text-red-400 hover:!text-white/80 transition-colors"
       >
         Remove
       </button>

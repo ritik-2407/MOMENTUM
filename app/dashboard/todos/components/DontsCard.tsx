@@ -96,7 +96,7 @@ export default function DontsCard(){
                             <span className="text-sm font-light text-white/80">{d.dont}</span>
                             <button 
                                 onClick={() => deleteDont(d._id)}
-                                className="cursor-pointer text-[11px] uppercase tracking-wider text-transparent group-hover:text-red-400/80 hover:!text-red-400 transition-colors"
+                                className="cursor-pointer text-[11px] uppercase tracking-wider text-red-400/30 md:text-transparent md:group-hover:text-red-400/80 hover:!text-red-400 transition-colors"
                             >
                                 Remove
                             </button>
