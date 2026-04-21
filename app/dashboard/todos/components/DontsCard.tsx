@@ -69,7 +69,7 @@ export default function DontsCard(){
         <div className="bg-black/20 rounded-2xl border border-white/5 p-6 sm:p-8 flex flex-col w-full min-h-[450px] h-auto transition-all duration-500 relative">
             
             <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-3xl sm:text-3xl font-semibold mb-10 text-white font-poppins tracking-wide">Things to avoid today</h2>
+                <h2 className="text-3xl sm:text-3xl font-semibold mb-10 text-white font-poppins tracking-wide">Things to avoid</h2>
             </div>
             
             <form onSubmit={addDont} className="mb-6 flex w-full gap-3">
@@ -96,7 +96,7 @@ export default function DontsCard(){
                             <span className="text-sm font-light text-white/80">{d.dont}</span>
                             <button 
                                 onClick={() => deleteDont(d._id)}
-                                className="cursor-pointer text-[11px] uppercase tracking-wider text-transparent group-hover:text-red-400/80 hover:!text-red-400 transition-colors"
+                                className="cursor-pointer text-[11px] uppercase tracking-wider text-red-400/30 md:text-transparent md:group-hover:text-red-400/80 hover:!text-red-400 transition-colors"
                             >
                                 Remove
                             </button>
